@@ -1,6 +1,9 @@
-//Tic Tac No by: Jonatan@9998 jonatan.gud.hum@gmail.com https://github.com/Jonatan6/Tic-Tac-DS Jonatan1
+//Tic Tac DS by: Jonatan#9998 Jonatan1 jonatan.gud.hum@gmail.com https://github.com/Jonatan6/Tic-Tac-DS
 #include <nds.h>
 #include <stdio.h>
+#include <nds/input.h>
+#include <nds/touch.h>
+#include "font.h"
 
 void draw_board(char board[], PrintConsole* pc) {
 	char border[] =
@@ -42,14 +45,12 @@ bool touch_clicked(touchPosition* touch) {
 //---------------------------------------------------------------------------------
 int main(void) {
 //---------------------------------------------------------------------------------
+	
 	PrintConsole topScreen;
 	PrintConsole bottomScreen;
 	
 	videoSetMode(MODE_0_2D);
 	videoSetModeSub(MODE_0_2D);
-
-	vramSetBankA(VRAM_A_MAIN_BG);
-	vramSetBankC(VRAM_C_SUB_BG);
 
 	consoleInit(&topScreen, 3,BgType_Text4bpp, BgSize_T_256x256, 31, 0, true, true);
 	consoleInit(&bottomScreen, 3,BgType_Text4bpp, BgSize_T_256x256, 31, 0, false, true); 
@@ -57,10 +58,14 @@ int main(void) {
 	touchPosition touch;
 	
 	bool touch_down = false;
-	
 	bool xturn = true;
+	bool cent_block = false;
+	bool settings = false;
+	bool backup_unlock =true;
+	
 	char *border;
 	char board[] = "         ";
+	char board_b[] = "         ";
 	
 	int box_w = 72;
 	int box_h = 62;
@@ -70,19 +75,54 @@ int main(void) {
 	int xscore = 0;
 	int oscore = 0;
 
+
+	/*for custom fonts
+	
+	const int tile_base = 0;
+	const int map_base = 20;
+	
+	//videoSetModeSub(MODE_0_2D);	
+	vramSetBankC(VRAM_C_SUB_BG); 
+
+	PrintConsole *console = consoleInit(0,0, BgType_Text4bpp, BgSize_T_256x256, map_base, tile_base, false, false);
+
+	ConsoleFont font;
+
+	font.gfx = (u16*)fontTiles;
+	font.pal = (u16*)fontPal;
+	font.numChars = 95;
+	font.numColors =  fontPalLen / 2;
+	font.bpp = 4;
+	font.asciiOffset = 32;
+	font.convertSingleColor = false;
+	
+	consoleSetFont(console, &font);*/
+
+
 	while(1) {
 		touchRead(&touch);
 		draw_board(board, &bottomScreen);
 		
+				if (settings == false) {
+				
 		consoleSelect(&topScreen);
 		consoleSetWindow(&topScreen, 1,1,30,21);
-		iprintf("          TIC TAC DS");
+		iprintf("VER 2.0   TIC TAC DS");
 		consoleSetWindow(&topScreen, 1,2,30,21);
 		iprintf("          BY JONATAN");
+		consoleSetWindow(&topScreen, 1,10,30,21);
+		iprintf("PRESS START/SELECT FOR OPTIONS");
 		consoleSetWindow(&topScreen, 1,18,30,21);
-		iprintf("X HAS A SCORE OF: %d", xscore);
+		iprintf("X HAS A SCORE OF: %d        ", xscore);
 		consoleSetWindow(&topScreen, 1,19,30,21);
-		iprintf("O HAS A SCORE OF: %d", oscore);
+		iprintf("O HAS A SCORE OF: %d        ", oscore);
+		consoleSetWindow(&topScreen, 1,20,30,21);
+		iprintf("                               ");
+		consoleSetWindow(&topScreen, 1,21,30,21);
+		iprintf("                               ");
+		consoleSetWindow(&topScreen, 1,22,30,21);
+		iprintf("                               ");
+		
 		
 				if (xturn) {
 					consoleSetWindow(&topScreen, 1,22,30,21);
@@ -92,94 +132,140 @@ int main(void) {
 					consoleSetWindow(&topScreen, 1,22,30,21);
 		iprintf("O'S TURN");
 				}
+			}
+				
+		scanKeys();
+		int keys = keysDown();
+		if (keys & KEY_START || keys & KEY_SELECT) {settings = !settings; 
+		consoleSetWindow(&topScreen, 1,7,30,21);
+		iprintf("                    "); 		
+		//consoleSetWindow(&topScreen, 1,1,30,21);
+		//iprintf("                    ");
+		//consoleSetWindow(&topScreen, 1,2,30,21);
+		//iprintf("                    ");
+		consoleSetWindow(&topScreen, 1,10,30,21);
+		iprintf("                              ");
+		consoleSetWindow(&topScreen, 1,18,30,21);
+		iprintf("PRESS START/SELECT TO EXIT", xscore);
+		consoleSetWindow(&topScreen, 1,19,30,21);
+		iprintf("PRESS A TO RESET SCORES", oscore);
+		consoleSetWindow(&topScreen, 1,20,30,21);
+		iprintf("PRESS B TO CLEAR BOARD");
+		consoleSetWindow(&topScreen, 1,21,30,21);
+		iprintf("PRESS Y TO TURN NINJA MODE ON");
+		consoleSetWindow(&topScreen, 1,22,30,21);
+		iprintf("PRESS X TO BLOCK CENTER SQUARE");
+		if (backup_unlock){
+		board_b[0] = board[0]; board_b[1] = board[1]; board_b[2] = board[2]; board_b[3] = board[3]; board_b[4] = board[4]; board_b[5] 			= board[5]; board_b[6] = board[6];board_b[7] = board[7]; board_b[8] = board[8];	backup_unlock = false;	}
+		board[0] = 'O'; board[1] = 'P'; board[2] = 'T'; board[3] = 'I'; board[4] = 'O'; board[5] = 'N'; board[6] = 'S'; board[7] = '‎'			; board[8] = '‎';
+
+		}
 		
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX		
+		if (keys & KEY_A) {xscore = 0; oscore = 0;
+		consoleSetWindow(&topScreen, 1,22,20,21);
+		iprintf("DONE!");}
+		
+		if (keys & KEY_B) {
+		consoleSetWindow(&topScreen, 1,22,20,21);
+		iprintf("DONE!"); board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[4] = ' '; board_b[5] = ' '; 			board_b[6] = ' '; board_b[7] = ' '; board_b[8] = ' ';}
+		
+		if (keys & KEY_Y) { 	videoSetModeSub(MODE_0_2D);	
+								vramSetBankC(VRAM_C_SUB_BG); 
+	}
+	
+		if (keys & KEY_X) { cent_block = !cent_block;
+	}
+//X WON
+if (settings == false) {
 		if(board[8] == 'X' && board[7] == 'X' && board[6] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           X WON!!!");
+		iprintf("           X WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
 			}
 		if(board[5] == 'X' && board[4] == 'X' && board[3] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           X WON!!!");
+		iprintf("           X WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
 			}
 		if(board[2] == 'X' && board[1] == 'X' && board[0] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           X WON!!!");
+		iprintf("           X WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
 			}
 		if(board[0] == 'X' && board[3] == 'X' && board[6] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           X WON!!!");
+		iprintf("           X WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
 			}
 		if(board[1] == 'X' && board[4] == 'X' && board[7] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           X WON!!!");
+		iprintf("           X WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
 			}
 		if(board[2] == 'X' && board[5] == 'X' && board[8] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           X WON!!!");
+		iprintf("           X WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
 			}
 if(board[0] == 'X' && board[4] == 'X' && board[8] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           X WON!!!");
+		iprintf("           X WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
 			}
 		if(board[2] == 'X' && board[4] == 'X' && board[6] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           X WON!!!");
+		iprintf("           X WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
 			}
-//OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO	
+//O WON
 	if(board[8] == 'O' && board[7] == 'O' && board[6] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           O WON!!!");
+		iprintf("           O WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; oscore = oscore+1;
 			}
 		if(board[5] == 'O' && board[4] == 'O' && board[3] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           O WON!!!");
+		iprintf("           O WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; oscore = oscore+1;
 			}
 		if(board[2] == 'O' && board[1] == 'O' && board[0] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           O WON!!!");
+		iprintf("           O WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; oscore = oscore+1;
 			}
 		if(board[0] == 'O' && board[3] == 'O' && board[6] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           O WON!!!");
+		iprintf("           O WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;	
 			}
 		if(board[1] == 'O' && board[4] == 'O' && board[7] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           O WON!!!");
+		iprintf("           O WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;									}
 		if(board[2] == 'O' && board[5] == 'O' && board[8] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           O WON!!!");
+		iprintf("           O WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;									}
 if(board[0] == 'O' && board[4] == 'O' && board[8] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           O WON!!!");
+		iprintf("           O WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;									}
 		if(board[2] == 'O' && board[4] == 'O' && board[6] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("           O WON!!!");
+		iprintf("           O WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;									}
-//TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+//ITS A TIE
 if(board[0] == ' ' || board[1] == ' ' || board[2] == ' ' || board[3] == ' ' || board[4] == ' ' || board[5] == ' ' || board[6] == ' ' || board[7] == ' ' || board[8] == ' ') {consoleSetWindow(&topScreen, 1,2,30,21);
-		iprintf("          BY JONATAN");
+		iprintf(" ");
 		}
 else {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("          ITS A TIE!");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';			}
-//END OF MADNESS		
+board[0] = board_b[0]; board[1] = board_b[1]; board[2] = board_b[2]; board[3] = board_b[3]; board[4] = board_b[4]; board[5] = board_b[5]; board[6] = board_b[6]; board[7] = board_b[7]; board[8] = board_b[8];
+board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[4] = ' '; board_b[5] = ' '; board_b[6] = ' '; board_b[7] = ' '; board_b[8] = ' '; backup_unlock =true; if (cent_block){ board[4] = '=';} else { board[4] = ' ';}
+			}
+//END OF MADNESS
+}		
 		if(touch_clicked(&touch) && !touch_down) {
 			touch_down = true;
 			
