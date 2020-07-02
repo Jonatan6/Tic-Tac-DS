@@ -5,6 +5,9 @@
 #include <nds/touch.h>
 #include "font.h"
 
+bool title_screen = true;
+bool ninja_mode = false;
+
 void draw_board(char board[], PrintConsole* pc) {
 	char border[] =
 "--------- --------- --------- "
@@ -31,8 +34,11 @@ void draw_board(char board[], PrintConsole* pc) {
 	consoleSetWindow(pc, 1,1,30,21);
 	consoleSelect(pc);
 	
-	iprintf(border, board[0], board[1], board[2], board[3], board[4], board[5], board[6], board[7], board[8]);
-}
+	if (ninja_mode == false) {
+	iprintf(border, board[0], board[1], board[2], board[3], board[4], board[5], board[6], board[7], board[8]);}
+
+	else {iprintf(border, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');}
+}	
 
 bool touch_clicked(touchPosition* touch) {
 	if(touch->px == 0 && touch->py == 0) {
@@ -45,7 +51,7 @@ bool touch_clicked(touchPosition* touch) {
 //---------------------------------------------------------------------------------
 int main(void) {
 //---------------------------------------------------------------------------------
-	
+
 	PrintConsole topScreen;
 	PrintConsole bottomScreen;
 	
@@ -62,10 +68,14 @@ int main(void) {
 	bool cent_block = false;
 	bool settings = false;
 	bool backup_unlock =true;
+	bool d_d = false;
+	
+	bool board_clickable = false;
 	
 	char *border;
 	char board[] = "         ";
 	char board_b[] = "         ";
+	char board_n[] = "         ";
 	
 	int box_w = 72;
 	int box_h = 62;
@@ -100,18 +110,30 @@ int main(void) {
 
 
 	while(1) {
-		touchRead(&touch);
-		draw_board(board, &bottomScreen);
 		
-				if (settings == false) {
+		if(title_screen){
+			touchRead(&touch);
+			//scanKeys();
+			consoleSelect(&topScreen);
+			consoleSetWindow(&topScreen, 1,10,100,100);
+			iprintf("      TOUCH TO CONTINUE!");
+			consoleSelect(&bottomScreen);
+			consoleSetWindow(&bottomScreen, 1,10,30,30);
+			iprintf("      TOUCH TO CONTINUE!");
+			if (touch.px > 0 && touch.py > 0) { title_screen = false; }
+		}		
+		else {
+			draw_board(board, &bottomScreen);
+			touchRead(&touch);
+			if (settings == false) {
 				
 		consoleSelect(&topScreen);
 		consoleSetWindow(&topScreen, 1,1,30,21);
-		iprintf("VER 2.0   TIC TAC DS");
+		iprintf("VER 2.5   TIC TAC DS");
 		consoleSetWindow(&topScreen, 1,2,30,21);
 		iprintf("          BY JONATAN");
 		consoleSetWindow(&topScreen, 1,10,30,21);
-		iprintf("PRESS START/SELECT FOR OPTIONS");
+		iprintf("                             ");
 		consoleSetWindow(&topScreen, 1,18,30,21);
 		iprintf("X HAS A SCORE OF: %d        ", xscore);
 		consoleSetWindow(&topScreen, 1,19,30,21);
@@ -122,7 +144,8 @@ int main(void) {
 		iprintf("                               ");
 		consoleSetWindow(&topScreen, 1,22,30,21);
 		iprintf("                               ");
-		
+		consoleSetWindow(&topScreen, 1,10,20,21);
+			iprintf("                                  ");
 		
 				if (xturn) {
 					consoleSetWindow(&topScreen, 1,22,30,21);
@@ -136,9 +159,7 @@ int main(void) {
 				
 		scanKeys();
 		int keys = keysDown();
-		if (keys & KEY_START || keys & KEY_SELECT) {settings = !settings; 
-		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("                    "); 		
+		if (keys & KEY_START || keys & KEY_SELECT) {settings = !settings; board[4] = ' ';
 		//consoleSetWindow(&topScreen, 1,1,30,21);
 		//iprintf("                    ");
 		//consoleSetWindow(&topScreen, 1,2,30,21);
@@ -152,35 +173,39 @@ int main(void) {
 		consoleSetWindow(&topScreen, 1,20,30,21);
 		iprintf("PRESS B TO CLEAR BOARD");
 		consoleSetWindow(&topScreen, 1,21,30,21);
-		iprintf("PRESS Y TO TURN NINJA MODE ON");
-		consoleSetWindow(&topScreen, 1,22,30,21);
 		iprintf("PRESS X TO BLOCK CENTER SQUARE");
+		consoleSetWindow(&topScreen, 1, 22,30,21);
+		iprintf("PRESS Y TO TURN NINJA MODE ON");
+		consoleSetWindow(&topScreen, 1,7,30,21);
+		iprintf("                                                                      ");		
 		if (backup_unlock){
-		board_b[0] = board[0]; board_b[1] = board[1]; board_b[2] = board[2]; board_b[3] = board[3]; board_b[4] = board[4]; board_b[5] 			= board[5]; board_b[6] = board[6];board_b[7] = board[7]; board_b[8] = board[8];	backup_unlock = false;	}
-		board[0] = 'O'; board[1] = 'P'; board[2] = 'T'; board[3] = 'I'; board[4] = 'O'; board[5] = 'N'; board[6] = 'S'; board[7] = '‎'			; board[8] = '‎';
-
+		board_b[0] = board[0]; board_b[1] = board[1]; board_b[2] = board[2]; board_b[3] = board[3]; board_b[4] = board[4]; board_b[5] 			= board[5]; 			board_b[6] = board[6];board_b[7] = board[7]; board_b[8] = board[8];	backup_unlock = false;	}
+		board[0] = 'O'; board[1] = 'P'; board[2] = 'T'; board[3] = 'I'; board[4] = 'O'; board[5] = 'N'; board[6] = 'S'; board[7] = '‎'						; 			board[8] = '‎'; //hiden unicode charecter '‎' needed for unclickable field
+	}	if (settings){
+		if (d_d) {
+		consoleSelect(&topScreen);
+		consoleSetWindow(&topScreen, 1,7,20,21);
+		iprintf("             DONE!"); d_d = false;
 		}
 		
-		if (keys & KEY_A) {xscore = 0; oscore = 0;
-		consoleSetWindow(&topScreen, 1,22,20,21);
-		iprintf("DONE!");}
+		if (keys & KEY_A) {d_d = true; xscore = 0; oscore = 0;}
 		
 		if (keys & KEY_B) {
-		consoleSetWindow(&topScreen, 1,22,20,21);
-		iprintf("DONE!"); board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[4] = ' '; board_b[5] = ' '; 			board_b[6] = ' '; board_b[7] = ' '; board_b[8] = ' ';}
+		d_d = true;
+		board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[4] = ' '; board_b[5] = ' '; 							board_b[6] = ' '; board_b[7] = ' '; board_b[8] = ' ';}
 		
-		if (keys & KEY_Y) { 	videoSetModeSub(MODE_0_2D);	
-								vramSetBankC(VRAM_C_SUB_BG); 
-	}
+		if (keys & KEY_Y) {d_d = true;
+		ninja_mode = !ninja_mode;}
 	
-		if (keys & KEY_X) { cent_block = !cent_block;
+		if (keys & KEY_X) {d_d = true; cent_block = !cent_block;}
 	}
 //X WON
 if (settings == false) {
 		if(board[8] == 'X' && board[7] == 'X' && board[6] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           X WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
+strcpy(board, "         ");
+ xscore = xscore+1;
 			}
 		if(board[5] == 'X' && board[4] == 'X' && board[3] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
@@ -254,6 +279,7 @@ board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; 
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
 board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;									}
+if (cent_block){ board[4] = '=';} 
 //ITS A TIE
 if(board[0] == ' ' || board[1] == ' ' || board[2] == ' ' || board[3] == ' ' || board[4] == ' ' || board[5] == ' ' || board[6] == ' ' || board[7] == ' ' || board[8] == ' ') {consoleSetWindow(&topScreen, 1,2,30,21);
 		iprintf(" ");
@@ -262,11 +288,11 @@ else {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("          ITS A TIE!");
 board[0] = board_b[0]; board[1] = board_b[1]; board[2] = board_b[2]; board[3] = board_b[3]; board[4] = board_b[4]; board[5] = board_b[5]; board[6] = board_b[6]; board[7] = board_b[7]; board[8] = board_b[8];
-board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[4] = ' '; board_b[5] = ' '; board_b[6] = ' '; board_b[7] = ' '; board_b[8] = ' '; backup_unlock =true; if (cent_block){ board[4] = '=';} else { board[4] = ' ';}
+board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[4] = ' '; board_b[5] = ' '; board_b[6] = ' '; board_b[7] = ' '; board_b[8] = ' '; backup_unlock =true;
 			}
 //END OF MADNESS
 }		
-		if(touch_clicked(&touch) && !touch_down) {
+		if(touch_clicked(&touch) && !touch_down && board_clickable) {
 			touch_down = true;
 			
 	/*0*/	        	if(touch.px > (0*box_w + 0*xborder) && 
@@ -400,8 +426,11 @@ board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[
 			
 		} else if (!touch_clicked(&touch)){
 			touch_down = false;
+			board_clickable = true;
 		}
 		swiWaitForVBlank();
+		}
+	
 	}
 	return 0;
 }
