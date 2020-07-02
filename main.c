@@ -1,10 +1,13 @@
 //Tic Tac DS by: Jonatan#9998 Jonatan1 jonatan.gud.hum@gmail.com https://github.com/Jonatan6/Tic-Tac-DS
 #include <nds.h>
 #include <stdio.h>
+#include <time.h> 
+
+
 #include <nds/input.h>
 #include <nds/touch.h>
-#include "font.h"
 
+bool xturn = true;
 bool title_screen = true;
 bool ninja_mode = false;
 
@@ -48,10 +51,26 @@ bool touch_clicked(touchPosition* touch) {
 	}
 }
 
+bool board_is_full(char* board) {
+	for (int i = 0; i < 9; i++) {
+		if (board[i] == ' ') { return false; }
+	}
+	return true;
+}
+
+void draw_random_o(char* board) {
+	int n = rand() % 9;
+	
+	if (board_is_full(board) || xturn) { return; }
+
+	if (board[n] == ' ') { board[n] = 'O'; }
+	else { draw_random_o(board); }
+}
+
 //---------------------------------------------------------------------------------
 int main(void) {
 //---------------------------------------------------------------------------------
-
+	
 	PrintConsole topScreen;
 	PrintConsole bottomScreen;
 	
@@ -64,11 +83,12 @@ int main(void) {
 	touchPosition touch;
 	
 	bool touch_down = false;
-	bool xturn = true;
 	bool cent_block = false;
 	bool settings = false;
 	bool backup_unlock =true;
 	bool d_d = false;
+	bool aimode = false;
+	bool clear_screen = false;
 	
 	bool board_clickable = false;
 	
@@ -85,44 +105,30 @@ int main(void) {
 	int xscore = 0;
 	int oscore = 0;
 
-
-	/*for custom fonts
-	
-	const int tile_base = 0;
-	const int map_base = 20;
-	
-	//videoSetModeSub(MODE_0_2D);	
-	vramSetBankC(VRAM_C_SUB_BG); 
-
-	PrintConsole *console = consoleInit(0,0, BgType_Text4bpp, BgSize_T_256x256, map_base, tile_base, false, false);
-
-	ConsoleFont font;
-
-	font.gfx = (u16*)fontTiles;
-	font.pal = (u16*)fontPal;
-	font.numChars = 95;
-	font.numColors =  fontPalLen / 2;
-	font.bpp = 4;
-	font.asciiOffset = 32;
-	font.convertSingleColor = false;
-	
-	consoleSetFont(console, &font);*/
-
-
 	while(1) {
-		
+		rand(); // "seeds" by number of turns in the while loop
 		if(title_screen){
 			touchRead(&touch);
-			//scanKeys();
+			if (clear_screen == false) {																											consoleSelect(&topScreen);consoleClear();consoleSelect(&bottomScreen);consoleClear(); clear_screen = true;}
 			consoleSelect(&topScreen);
 			consoleSetWindow(&topScreen, 1,10,100,100);
 			iprintf("      TOUCH TO CONTINUE!");
 			consoleSelect(&bottomScreen);
+			consoleSetWindow(&bottomScreen, 1,15,30,30);
+			iprintf("       VS OTHER PLAYER");
 			consoleSetWindow(&bottomScreen, 1,10,30,30);
-			iprintf("      TOUCH TO CONTINUE!");
-			if (touch.px > 0 && touch.py > 0) { title_screen = false; }
-		}		
+			iprintf("------------------------------");
+			consoleSetWindow(&bottomScreen, 1,5,30,30);
+			iprintf("         VS COMPUTER");
+			if (touch.px > 0 && touch.py > 97) { title_screen = false; }
+			else if (touch.px > 0 && touch.py < 97) { title_screen = false; aimode = true;}
+		}	
 		else {
+			if (aimode && !xturn) {
+				draw_random_o(board);
+				xturn = true;
+			}
+			
 			draw_board(board, &bottomScreen);
 			touchRead(&touch);
 			if (settings == false) {
@@ -156,14 +162,13 @@ int main(void) {
 		iprintf("O'S TURN");
 				}
 			}
-				
+		
 		scanKeys();
 		int keys = keysDown();
+		if (keys & KEY_B) {title_screen = true; clear_screen = false; strcpy(board, "         "); aimode = false; board_clickable = false; continue;}
+		
+		scanKeys();
 		if (keys & KEY_START || keys & KEY_SELECT) {settings = !settings; board[4] = ' ';
-		//consoleSetWindow(&topScreen, 1,1,30,21);
-		//iprintf("                    ");
-		//consoleSetWindow(&topScreen, 1,2,30,21);
-		//iprintf("                    ");
 		consoleSetWindow(&topScreen, 1,10,30,21);
 		iprintf("                              ");
 		consoleSetWindow(&topScreen, 1,18,30,21);
@@ -210,75 +215,75 @@ strcpy(board, "         ");
 		if(board[5] == 'X' && board[4] == 'X' && board[3] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           X WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
+strcpy(board, "         ");xscore = xscore+1;
 			}
 		if(board[2] == 'X' && board[1] == 'X' && board[0] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           X WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
+strcpy(board, "         ");xscore = xscore+1;
 			}
 		if(board[0] == 'X' && board[3] == 'X' && board[6] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           X WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
+strcpy(board, "         ");xscore = xscore+1;
 			}
 		if(board[1] == 'X' && board[4] == 'X' && board[7] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           X WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
+strcpy(board, "         ");xscore = xscore+1;
 			}
 		if(board[2] == 'X' && board[5] == 'X' && board[8] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           X WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
+strcpy(board, "         ");xscore = xscore+1;
 			}
 if(board[0] == 'X' && board[4] == 'X' && board[8] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           X WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
+strcpy(board, "         ");xscore = xscore+1;
 			}
 		if(board[2] == 'X' && board[4] == 'X' && board[6] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           X WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; xscore = xscore+1;
+strcpy(board, "         ");xscore = xscore+1;
 			}
 //O WON
 	if(board[8] == 'O' && board[7] == 'O' && board[6] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; oscore = oscore+1;
+strcpy(board, "         ");oscore = oscore+1;
 			}
 		if(board[5] == 'O' && board[4] == 'O' && board[3] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; oscore = oscore+1;
+strcpy(board, "         ");oscore = oscore+1;
 			}
 		if(board[2] == 'O' && board[1] == 'O' && board[0] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' '; oscore = oscore+1;
+strcpy(board, "         ");oscore = oscore+1;
 			}
 		if(board[0] == 'O' && board[3] == 'O' && board[6] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;	
+strcpy(board, "         ");oscore = oscore+1;	
 			}
 		if(board[1] == 'O' && board[4] == 'O' && board[7] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;									}
+strcpy(board, "         ");oscore = oscore+1;									}
 		if(board[2] == 'O' && board[5] == 'O' && board[8] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;									}
+strcpy(board, "         ");oscore = oscore+1;									}
 if(board[0] == 'O' && board[4] == 'O' && board[8] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;									}
+strcpy(board, "         ");oscore = oscore+1;									}
 		if(board[2] == 'O' && board[4] == 'O' && board[6] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-board[0] = ' '; board[1] = ' '; board[2] = ' '; board[3] = ' '; board[4] = ' '; board[5] = ' '; board[6] = ' '; board[7] = ' '; board[8] = ' ';	oscore = oscore+1;									}
+strcpy(board, "         ");	oscore = oscore+1;									}
 if (cent_block){ board[4] = '=';} 
 //ITS A TIE
 if(board[0] == ' ' || board[1] == ' ' || board[2] == ' ' || board[3] == ' ' || board[4] == ' ' || board[5] == ' ' || board[6] == ' ' || board[7] == ' ' || board[8] == ' ') {consoleSetWindow(&topScreen, 1,2,30,21);
