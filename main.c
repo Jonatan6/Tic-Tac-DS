@@ -11,6 +11,20 @@ bool xturn = true;
 bool title_screen = true;
 bool ninja_mode = false;
 
+void debug(char msg[]) {
+	PrintConsole screen;
+	
+	videoSetMode(MODE_0_2D);
+	videoSetModeSub(MODE_0_2D);
+
+	consoleInit(&screen, 3,BgType_Text4bpp, BgSize_T_256x256, 31, 0, false, true); 
+	consoleSelect(&screen);
+
+	consoleSetWindow(&screen, 1,10,100,100);
+	iprintf(msg);
+	while(1){}
+}
+
 void draw_board(char board[], PrintConsole* pc) {
 	char border[] =
 "--------- --------- --------- "
@@ -67,6 +81,189 @@ void draw_random_o(char* board) {
 	else { draw_random_o(board); }
 }
 
+void draw_random_o2(char* board) {
+	if (board_is_full(board) || xturn) { return; }
+
+	if (board[0] == 'X' && board[1] == 'X' && board[2] == ' ') {
+		board[2] = 'O';
+	} 
+	else if (board[0] == 'X' && board[1] == ' ' && board[2] == 'X') {
+		board[1] = 'O';
+	}
+	else if (board[0] == ' ' && board[1] == 'X' && board[2] == 'X') {
+		board[0] = 'O';
+	}
+	else if (board[3] == 'X' && board[4] == 'X' && board[5] == ' ') {
+		board[5] = 'O';
+	}
+	else if (board[3] == 'X' && board[4] == ' ' && board[5] == 'X') {
+		board[4] = 'O';
+	}
+	else if (board[3] == ' ' && board[4] == 'X' && board[5] == 'X') {
+		board[3] = 'O';
+	}
+	else if (board[6] == 'X' && board[7] == 'X' && board[8] == ' ') {
+		board[8] = 'O';
+	}
+	else if (board[6] == 'X' && board[7] == ' ' && board[8] == 'X') {
+		board[7] = 'O';
+	}
+	else if (board[6] == ' ' && board[7] == 'X' && board[8] == 'X') {
+		board[6] = 'O';
+	}
+	else if (board[0] == 'X' && board[3] == 'X' && board[6] == ' ') {
+		board[6] = 'O';
+	} 
+	else if (board[0] == 'X' && board[3] == ' ' && board[6] == 'X') {
+		board[3] = 'O';
+	}
+	else if (board[0] == ' ' && board[3] == 'X' && board[6] == 'X') {
+		board[0] = 'O';
+	}
+	else if (board[1] == 'X' && board[4] == 'X' && board[7] == ' ') {
+		board[7] = 'O';
+	}
+	else if (board[1] == 'X' && board[4] == ' ' && board[7] == 'X') {
+		board[3] = 'O';
+	}
+	else if (board[1] == ' ' && board[4] == 'X' && board[7] == 'X') {
+		board[1] = 'O';
+	}
+	else if (board[2] == 'X' && board[5] == 'X' && board[8] == ' ') {
+		board[8] = 'O';
+	}
+	else if (board[2] == 'X' && board[5] == ' ' && board[8] == 'X') {
+		board[5] = 'O';
+	}
+	else if (board[2] == ' ' && board[5] == 'X' && board[8] == 'X') {
+		board[2] = 'O';
+	}
+	else if (board[0] == 'X' && board[4] == 'X' && board[8] == ' ') {
+		board[8] = 'O';
+	}
+	else if (board[0] == 'X' && board[4] == ' ' && board[8] == 'X') {
+		board[4] = 'O';
+	}
+	else if (board[0] == ' ' && board[4] == 'X' && board[8] == 'X') {
+		board[0] = 'O';
+	}
+	else if (board[2] == 'X' && board[4] == 'X' && board[6] == ' ') {
+		board[6] = 'O';
+	}
+	else if (board[2] == 'X' && board[4] == ' ' && board[6] == 'X') {
+		board[4] = 'O';
+	}
+	else if (board[2] == ' ' && board[4] == 'X' && board[6] == 'X') {
+		board[2] = 'O';
+	} else {
+		draw_random_o(board);
+	}
+}
+
+void draw_random_o3(char* board) {
+	if (board_is_full(board) || xturn) { return; }
+
+	 if (board[0] == 'X' && board[1] == ' ' && board[2] == ' ' && board[3] == ' ' && board[4] == ' ' && board[5] == ' ' && board[6] == ' ' && board[7] == ' ' && board[8] == ' ') {
+		board[4] = 'O';
+	 }
+	else if (board[0] == ' ' && board[1] == ' ' && board[2] == 'X' && board[3] == ' ' && board[4] == ' ' && board[5] == ' ' && board[6] == ' ' && board[7] == ' ' && board[8] == ' ') {
+		board[4] = 'O';
+	}
+	else if (board[0] == 'X' && board[1] == ' ' && board[2] == ' ' && board[3] == ' ' && board[4] == ' ' && board[5] == ' ' && board[6] == ' ' && board[7] == ' ' && board[8] == 'X') {
+		board[4] = 'O';
+	}
+	else if (board[0] == 'X' && board[1] == ' ' && board[2] == ' ' && board[3] == ' ' && board[4] == ' ' && board[5] == ' ' && board[6] == 'X' && board[7] == ' ' && board[8] == ' ') {
+		board[4] = 'O';
+	}
+	else if (board[0] == 'O' && board[1] == 'O' && board[2] == ' ') {
+		board[2] = 'O';
+	} 
+	else if (board[0] == 'O' && board[1] == ' ' && board[2] == 'O') {
+		board[1] = 'O';
+	}
+	else if (board[0] == ' ' && board[1] == 'O' && board[2] == 'O') {
+		board[0] = 'O';
+	}
+	else if (board[3] == 'O' && board[4] == 'O' && board[5] == ' ') {
+		board[5] = 'O';
+	}
+	else if (board[3] == 'O' && board[4] == ' ' && board[5] == 'O') {
+		board[4] = 'O';
+	}
+	else if (board[3] == ' ' && board[4] == 'O' && board[5] == 'O') {
+		board[3] = 'O';
+	}
+	else if (board[6] == 'O' && board[7] == 'O' && board[8] == ' ') {
+		board[8] = 'O';
+	}
+	else if (board[6] == 'O' && board[7] == ' ' && board[8] == 'O') {
+		board[7] = 'O';
+	}
+	else if (board[6] == ' ' && board[7] == 'O' && board[8] == 'O') {
+		board[6] = 'O';
+	}
+	else if (board[0] == 'O' && board[3] == 'O' && board[6] == ' ') {
+		board[6] = 'O';
+	} 
+	else if (board[0] == 'O' && board[3] == ' ' && board[6] == 'O') {
+		board[3] = 'O';
+	}
+	else if (board[0] == ' ' && board[3] == 'O' && board[6] == 'O') {
+		board[0] = 'O';
+	}
+	else if (board[1] == 'O' && board[4] == 'O' && board[7] == ' ') {
+		board[7] = 'O';
+	}
+	else if (board[1] == 'O' && board[4] == ' ' && board[7] == 'O') {
+		board[3] = 'O';
+	}
+	else if (board[1] == ' ' && board[4] == 'O' && board[7] == 'O') {
+		board[1] = 'O';
+	}
+	else if (board[2] == 'O' && board[5] == 'O' && board[8] == ' ') {
+		board[8] = 'O';
+	}
+	else if (board[2] == 'O' && board[5] == ' ' && board[8] == 'O') {
+		board[5] = 'O';
+	}
+	else if (board[2] == ' ' && board[5] == 'X' && board[8] == 'O') {
+		board[2] = 'O';
+	}
+	else if (board[0] == 'O' && board[4] == 'O' && board[8] == ' ') {
+		board[8] = 'O';
+	}
+	else if (board[0] == 'O' && board[4] == ' ' && board[8] == 'O') {
+		board[4] = 'O';
+	}
+	else if (board[0] == ' ' && board[4] == 'O' && board[8] == 'O') {
+		board[0] = 'O';
+	}
+	else if (board[2] == 'O' && board[4] == 'O' && board[6] == ' ') {
+		board[6] = 'O';
+	}
+	else if (board[2] == 'O' && board[4] == ' ' && board[6] == 'O') {
+		board[4] = 'O';
+	}
+	else if (board[2] == ' ' && board[4] == 'O' && board[6] == 'O') {
+		board[2] = 'O';
+	} else {
+		draw_random_o2(board);
+	}
+}
+
+// If touch is clicked, wait forever until touch is released.
+void read_touch(touchPosition* touch) {
+	touchPosition a, b;
+	touchRead(&a);
+	touchRead(&b);
+
+	while(touch_clicked(&a)) {
+		touchRead(&a);
+	}
+
+	*touch = b;
+}
+
 //---------------------------------------------------------------------------------
 int main(void) {
 //---------------------------------------------------------------------------------
@@ -82,16 +279,15 @@ int main(void) {
 	
 	touchPosition touch;
 	
-	bool touch_down = false;
 	bool cent_block = false;
 	bool settings = false;
 	bool backup_unlock =true;
 	bool d_d = false;
 	bool aimode = false;
 	bool clear_screen = false;
-	
-	bool board_clickable = false;
-	
+	bool sub_title_screen = false;
+	bool globglo = false;
+
 	char *border;
 	char board[] = "         ";
 	char board_b[] = "         ";
@@ -104,89 +300,182 @@ int main(void) {
 	
 	int xscore = 0;
 	int oscore = 0;
+	int difficulty = 0;
 
 	while(1) {
 		rand(); // "seeds" by number of turns in the while loop
-		if(title_screen){
-			touchRead(&touch);
-			if (clear_screen == false) {																											consoleSelect(&topScreen);consoleClear();consoleSelect(&bottomScreen);consoleClear(); clear_screen = true;}
-			consoleSelect(&topScreen);
-			consoleSetWindow(&topScreen, 1,10,100,100);
-			iprintf("      TOUCH TO CONTINUE!");
-			consoleSelect(&bottomScreen);
-			consoleSetWindow(&bottomScreen, 1,15,30,30);
-			iprintf("       VS OTHER PLAYER");
-			consoleSetWindow(&bottomScreen, 1,10,30,30);
-			iprintf("------------------------------");
-			consoleSetWindow(&bottomScreen, 1,5,30,30);
-			iprintf("         VS COMPUTER");
-			if (touch.px > 0 && touch.py > 97) { title_screen = false; }
-			else if (touch.px > 0 && touch.py < 97) { title_screen = false; aimode = true;}
+		if (title_screen) {
+
+						scanKeys();
+			int keys = keysDown();
+			if (keys & KEY_B && settings == false) {
+				title_screen = true; 
+				clear_screen = false;
+				sub_title_screen = false;
+				strcpy(board, "         "); 
+				aimode = false;
+				globglo = true;
+				difficulty = 0;
+				continue;
+
+			}
+
+			read_touch(&touch);
+			if (clear_screen == false && sub_title_screen == false) {																											
+				consoleSelect(&topScreen);
+				consoleClear();
+				consoleSelect(&bottomScreen);
+				consoleClear();
+				clear_screen = true;
+				consoleSelect(&topScreen);
+				consoleSetWindow(&topScreen, 1,10,100,100);
+				iprintf("      TOUCH TO CONTINUE!");
+
+
+				consoleSetWindow(&topScreen, 1,18,30,21);
+				iprintf("                            ", xscore);
+				consoleSetWindow(&topScreen, 1,19,30,21);
+				iprintf("                            ", oscore);
+				consoleSetWindow(&topScreen, 1,7,30,21);
+		iprintf("                    ");
+
+
+				consoleSelect(&bottomScreen);
+				consoleSetWindow(&bottomScreen, 1,15,30,30);
+				iprintf("       VS OTHER PLAYER");
+				consoleSetWindow(&bottomScreen, 1,10,30,30);
+				iprintf("------------------------------");
+				consoleSetWindow(&bottomScreen, 1,5,30,30);
+				iprintf("         VS COMPUTER");
+			}	
+			if (globglo) {clear_screen = false; globglo = false;}
+
+			if (touch.px > 0 && touch.py > 97 && sub_title_screen == false) { title_screen = false; }
+			else if (touch.px > 0 && touch.py < 97 && sub_title_screen == false) { 
+				sub_title_screen = true;	
+				consoleSelect(&topScreen);
+				consoleSetWindow(&topScreen, 1,10,100,100);
+				iprintf("                              ");
+				consoleSelect(&bottomScreen);
+				consoleSetWindow(&bottomScreen, 1,15,30,30);
+				iprintf("                              ");
+				consoleSetWindow(&bottomScreen, 1,10,30,30);
+				iprintf("                              ");
+				consoleSetWindow(&bottomScreen, 1,5,30,30);
+				iprintf("                              ");
+				consoleSetWindow(&bottomScreen, 1,6,30,30);
+				iprintf("            EASY              ");
+				consoleSetWindow(&bottomScreen, 1,9,30,30);
+				iprintf("------------------------------");
+				consoleSetWindow(&bottomScreen, 1,12,30,30);
+				iprintf("           MEDIUM             ");
+				consoleSetWindow(&bottomScreen, 1,15,30,30);
+				iprintf("------------------------------");
+				consoleSetWindow(&bottomScreen, 1,18,30,30);
+				iprintf("            HARD              ");
+			}
+			else if (touch.px > 0 && touch.py < 64 && sub_title_screen ) {difficulty = 1; title_screen = false; sub_title_screen =false;}	
+			else if (touch.px > 0 && touch.py < 128 && sub_title_screen) {difficulty = 2; title_screen = false; sub_title_screen =false;}
+			else if (touch.px > 0 && touch.py < 192 && sub_title_screen) {difficulty = 3; title_screen = false; sub_title_screen =false;}
 		}	
 		else {
-			if (aimode && !xturn) {
+			if (difficulty == 1 && !xturn) {
 				draw_random_o(board);
 				xturn = true;
 			}
-			
+			else if (difficulty == 2 && !xturn) {
+				draw_random_o2(board);
+				xturn = true;
+			}	
+			else if (difficulty == 3 && !xturn) {
+				draw_random_o3(board);
+				xturn = true;
+			}
+
 			draw_board(board, &bottomScreen);
-			touchRead(&touch);
+			read_touch(&touch);
 			if (settings == false) {
+				consoleSelect(&topScreen);
+				consoleSetWindow(&topScreen, 1,1,30,21);
+				iprintf("VER 2.5   TIC TAC DS");
+				consoleSetWindow(&topScreen, 1,2,30,21);
+				iprintf("          BY JONATAN");
+				consoleSetWindow(&topScreen, 1,10,30,21);
+				iprintf("                             ");
+				consoleSetWindow(&topScreen, 1,18,30,21);
+				iprintf("X HAS A SCORE OF: %d        ", xscore);
+				consoleSetWindow(&topScreen, 1,19,30,21);
+				iprintf("O HAS A SCORE OF: %d        ", oscore);
+				consoleSetWindow(&topScreen, 1,20,30,21);
+				iprintf("                               ");
+				consoleSetWindow(&topScreen, 1,21,30,21);
+				iprintf("                               ");
+				consoleSetWindow(&topScreen, 1,22,30,21);
+				iprintf("                               ");
+				consoleSetWindow(&topScreen, 1,10,20,21);
+				iprintf("                                  ");
 				
-		consoleSelect(&topScreen);
-		consoleSetWindow(&topScreen, 1,1,30,21);
-		iprintf("VER 2.5   TIC TAC DS");
-		consoleSetWindow(&topScreen, 1,2,30,21);
-		iprintf("          BY JONATAN");
-		consoleSetWindow(&topScreen, 1,10,30,21);
-		iprintf("                             ");
-		consoleSetWindow(&topScreen, 1,18,30,21);
-		iprintf("X HAS A SCORE OF: %d        ", xscore);
-		consoleSetWindow(&topScreen, 1,19,30,21);
-		iprintf("O HAS A SCORE OF: %d        ", oscore);
-		consoleSetWindow(&topScreen, 1,20,30,21);
-		iprintf("                               ");
-		consoleSetWindow(&topScreen, 1,21,30,21);
-		iprintf("                               ");
-		consoleSetWindow(&topScreen, 1,22,30,21);
-		iprintf("                               ");
-		consoleSetWindow(&topScreen, 1,10,20,21);
-			iprintf("                                  ");
-		
 				if (xturn) {
 					consoleSetWindow(&topScreen, 1,22,30,21);
-		iprintf("X'S TURN");
-			
-				} else {
+					iprintf("X'S TURN");			
+				}
+				else {
 					consoleSetWindow(&topScreen, 1,22,30,21);
-		iprintf("O'S TURN");
+					iprintf("O'S TURN");
 				}
 			}
 		
-		scanKeys();
-		int keys = keysDown();
-		if (keys & KEY_B) {title_screen = true; clear_screen = false; strcpy(board, "         "); aimode = false; board_clickable = false; continue;}
-		
-		scanKeys();
-		if (keys & KEY_START || keys & KEY_SELECT) {settings = !settings; board[4] = ' ';
-		consoleSetWindow(&topScreen, 1,10,30,21);
-		iprintf("                              ");
-		consoleSetWindow(&topScreen, 1,18,30,21);
-		iprintf("PRESS START/SELECT TO EXIT", xscore);
-		consoleSetWindow(&topScreen, 1,19,30,21);
-		iprintf("PRESS A TO RESET SCORES", oscore);
-		consoleSetWindow(&topScreen, 1,20,30,21);
-		iprintf("PRESS B TO CLEAR BOARD");
-		consoleSetWindow(&topScreen, 1,21,30,21);
-		iprintf("PRESS X TO BLOCK CENTER SQUARE");
-		consoleSetWindow(&topScreen, 1, 22,30,21);
-		iprintf("PRESS Y TO TURN NINJA MODE ON");
-		consoleSetWindow(&topScreen, 1,7,30,21);
-		iprintf("                                                                      ");		
-		if (backup_unlock){
-		board_b[0] = board[0]; board_b[1] = board[1]; board_b[2] = board[2]; board_b[3] = board[3]; board_b[4] = board[4]; board_b[5] 			= board[5]; 			board_b[6] = board[6];board_b[7] = board[7]; board_b[8] = board[8];	backup_unlock = false;	}
-		board[0] = 'O'; board[1] = 'P'; board[2] = 'T'; board[3] = 'I'; board[4] = 'O'; board[5] = 'N'; board[6] = 'S'; board[7] = '‎'						; 			board[8] = '‎'; //hiden unicode charecter '‎' needed for unclickable field
-	}	if (settings){
+			scanKeys();
+			int keys = keysDown();
+			if (keys & KEY_B && settings == false) {
+				title_screen = true;
+				sub_title_screen = false;
+				clear_screen = false; 
+				strcpy(board, "         "); 
+				aimode = false; 
+				difficulty = 0;
+				continue;
+			}
+
+			if (keys & KEY_START || keys & KEY_SELECT) {
+				settings = !settings; board[4] = ' ';
+				consoleSetWindow(&topScreen, 1,10,30,21);
+				iprintf("                              ");
+				consoleSetWindow(&topScreen, 1,18,30,21);
+				iprintf("PRESS START/SELECT TO EXIT", xscore);
+				consoleSetWindow(&topScreen, 1,19,30,21);
+				iprintf("PRESS A TO RESET SCORES", oscore);
+				consoleSetWindow(&topScreen, 1,20,30,21);
+				iprintf("PRESS B TO CLEAR BOARD");
+				consoleSetWindow(&topScreen, 1,21,30,21);
+				iprintf("PRESS X TO BLOCK CENTER SQUARE");
+				consoleSetWindow(&topScreen, 1, 22,30,21);
+				iprintf("PRESS Y TO TURN NINJA MODE ON");
+				consoleSetWindow(&topScreen, 1,7,30,21);
+				iprintf("                                                                      ");		
+			if (backup_unlock){
+				board_b[0] = board[0]; 
+				board_b[1] = board[1]; 
+				board_b[2] = board[2];
+				board_b[3] = board[3]; 
+				board_b[4] = board[4]; 
+				board_b[5] = board[5]; 
+				board_b[6] = board[6];
+				board_b[7] = board[7]; 
+				board_b[8] = board[8];
+				backup_unlock = false;
+			}
+			board[0] = 'O';
+			board[1] = 'P'; 
+			board[2] = 'T'; 
+			board[3] = 'I'; 
+			board[4] = 'O'; 
+			board[5] = 'N'; 
+			board[6] = 'S'; 
+			board[7] = '‎'; 			
+			board[8] = '‎'; //hiden unicode charecter '‎' needed for unclickable field
+	}	
+	if (settings){
 		if (d_d) {
 		consoleSelect(&topScreen);
 		consoleSetWindow(&topScreen, 1,7,20,21);
@@ -297,10 +586,9 @@ board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[
 			}
 //END OF MADNESS
 }		
-		if(touch_clicked(&touch) && !touch_down && board_clickable) {
-			touch_down = true;
+		if(touch_clicked(&touch)) {
 			
-	/*0*/	        	if(touch.px > (0*box_w + 0*xborder) && 
+	/*0*/	if(touch.px > (0*box_w + 0*xborder) && 
                        	touch.px < (1*box_w + 0*xborder) && 
                        	touch.py > (0*box_h + 0*yborder) && 
                        	touch.py < (1*box_h + 0*yborder) &&
@@ -429,9 +717,6 @@ board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[
 			}
 			
 			
-		} else if (!touch_clicked(&touch)){
-			touch_down = false;
-			board_clickable = true;
 		}
 		swiWaitForVBlank();
 		}
