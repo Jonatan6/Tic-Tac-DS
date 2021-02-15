@@ -1,8 +1,6 @@
-//Tic Tac DS by: Jonatan#9998 Jonatan1 jonatan.gud.hum@gmail.com https://github.com/Jonatan6/Tic-Tac-DS
 #include <nds.h>
 #include <stdio.h>
 #include <time.h> 
-
 
 #include <nds/input.h>
 #include <nds/touch.h>
@@ -11,21 +9,7 @@ bool xturn = true;
 bool title_screen = true;
 bool ninja_mode = false;
 
-void debug(char msg[]) {
-	PrintConsole screen;
-	
-	videoSetMode(MODE_0_2D);
-	videoSetModeSub(MODE_0_2D);
-
-	consoleInit(&screen, 3,BgType_Text4bpp, BgSize_T_256x256, 31, 0, false, true); 
-	consoleSelect(&screen);
-
-	consoleSetWindow(&screen, 1,10,100,100);
-	iprintf(msg);
-	while(1){}
-}
-
-void draw_board(char board[], PrintConsole* pc) {
+	void draw_board(char board[], PrintConsole* pc) {
 	char border[] =
 "--------- --------- --------- "
 "|       | |       | |       | "
@@ -264,9 +248,7 @@ void read_touch(touchPosition* touch) {
 	*touch = b;
 }
 
-//---------------------------------------------------------------------------------
 int main(void) {
-//---------------------------------------------------------------------------------
 	
 	PrintConsole topScreen;
 	PrintConsole bottomScreen;
@@ -363,6 +345,10 @@ int main(void) {
 				iprintf("                              ");
 				consoleSetWindow(&bottomScreen, 1,5,30,30);
 				iprintf("                              ");
+				consoleSelect(&topScreen);
+				consoleSetWindow(&topScreen, 1,10,30,30);
+				iprintf("      CHOOSE DIFFICULTY");
+				consoleSelect(&bottomScreen);
 				consoleSetWindow(&bottomScreen, 1,6,30,30);
 				iprintf("            EASY              ");
 				consoleSetWindow(&bottomScreen, 1,9,30,30);
@@ -397,7 +383,7 @@ int main(void) {
 			if (settings == false) {
 				consoleSelect(&topScreen);
 				consoleSetWindow(&topScreen, 1,1,30,21);
-				iprintf("VER 2.5   TIC TAC DS");
+				iprintf("VER 3.0   TIC TAC DS");
 				consoleSetWindow(&topScreen, 1,2,30,21);
 				iprintf("          BY JONATAN");
 				consoleSetWindow(&topScreen, 1,10,30,21);
@@ -472,8 +458,8 @@ int main(void) {
 			board[4] = 'O'; 
 			board[5] = 'N'; 
 			board[6] = 'S'; 
-			board[7] = '‎'; 			
-			board[8] = '‎'; //hiden unicode charecter '‎' needed for unclickable field
+			board[7] = '‎';	// Hidden unicode charecter '‎' needed for unclickable field
+			board[8] = '‎';	// The same here
 	}	
 	if (settings){
 		if (d_d) {
@@ -486,14 +472,14 @@ int main(void) {
 		
 		if (keys & KEY_B) {
 		d_d = true;
-		board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[4] = ' '; board_b[5] = ' '; 							board_b[6] = ' '; board_b[7] = ' '; board_b[8] = ' ';}
+		board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[4] = ' '; board_b[5] = ' '; board_b[6] = ' '; board_b[7] = ' '; board_b[8] = ' ';}
 		
 		if (keys & KEY_Y) {d_d = true;
 		ninja_mode = !ninja_mode;}
 	
 		if (keys & KEY_X) {d_d = true; cent_block = !cent_block;}
 	}
-//X WON
+// X Won
 if (settings == false) {
 		if(board[8] == 'X' && board[7] == 'X' && board[6] == 'X') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
@@ -536,7 +522,7 @@ strcpy(board, "         ");xscore = xscore+1;
 		iprintf("           X WON!!! ");
 strcpy(board, "         ");xscore = xscore+1;
 			}
-//O WON
+// O won
 	if(board[8] == 'O' && board[7] == 'O' && board[6] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
@@ -560,21 +546,24 @@ strcpy(board, "         ");oscore = oscore+1;
 		if(board[1] == 'O' && board[4] == 'O' && board[7] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-strcpy(board, "         ");oscore = oscore+1;									}
+strcpy(board, "         ");oscore = oscore+1;}
 		if(board[2] == 'O' && board[5] == 'O' && board[8] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-strcpy(board, "         ");oscore = oscore+1;									}
+strcpy(board, "         ");oscore = oscore+1;}
 if(board[0] == 'O' && board[4] == 'O' && board[8] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-strcpy(board, "         ");oscore = oscore+1;									}
+strcpy(board, "         ");oscore = oscore+1;}
 		if(board[2] == 'O' && board[4] == 'O' && board[6] == 'O') {
 		consoleSetWindow(&topScreen, 1,7,30,21);
 		iprintf("           O WON!!! ");
-strcpy(board, "         ");	oscore = oscore+1;									}
+strcpy(board, "         ");	oscore = oscore+1;}
+
+// If the center block is activated the center gets blocked
 if (cent_block){ board[4] = '=';} 
-//ITS A TIE
+
+// Its a tie
 if(board[0] == ' ' || board[1] == ' ' || board[2] == ' ' || board[3] == ' ' || board[4] == ' ' || board[5] == ' ' || board[6] == ' ' || board[7] == ' ' || board[8] == ' ') {consoleSetWindow(&topScreen, 1,2,30,21);
 		iprintf(" ");
 		}
@@ -584,7 +573,7 @@ else {
 board[0] = board_b[0]; board[1] = board_b[1]; board[2] = board_b[2]; board[3] = board_b[3]; board[4] = board_b[4]; board[5] = board_b[5]; board[6] = board_b[6]; board[7] = board_b[7]; board[8] = board_b[8];
 board_b[0] = ' '; board_b[1] = ' '; board_b[2] = ' '; board_b[3] = ' '; board_b[4] = ' '; board_b[5] = ' '; board_b[6] = ' '; board_b[7] = ' '; board_b[8] = ' '; backup_unlock =true;
 			}
-//END OF MADNESS
+// End of madness
 }		
 		if(touch_clicked(&touch)) {
 			
