@@ -1,7 +1,7 @@
 # Tic Tac DS
 ![icon](https://i.imgur.com/bIpQx2b_d.webp)
 
-Tic Tac DS is a small game that i programmed for the Nintendo DS in C.
+Tic Tac DS is a small game that I programmed for the Nintendo DS in C.
 
 Currently it has 2 modes: *Multiplayer* and *CPU Battle*, The CPU has 3 difficulties.
 
