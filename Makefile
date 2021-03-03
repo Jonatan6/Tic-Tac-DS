@@ -6,6 +6,21 @@ ifeq ($(strip $(DEVKITARM)),)
 $(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM)
 endif
 
+#---------------------------------------------------------------------------------
+#This part substitutes this include:
+# include $(DEVKITARM)/ds_rules
+# This allows you to set ROM info and icon easy
+# Please update this block from DS_RULES file at every DEVKITARM update
+#---------------------------------------------------------------------------------
+#include $(DEVKITARM)/base_rules
+
+LIBNDS	:=	$(DEVKITPRO)/libnds
+GAME_TITLE	    :=	Tic Tac DS
+GAME_SUBTITLE1	:=	By Jonatan!
+#GAME_SUBTITLE2	:=
+GAME_ICON		:=	$(CURDIR)/../icon.bmp
+
+_ADDFILES	:=	-d $(NITRO_FILES)
 include $(DEVKITARM)/ds_rules
 
 #---------------------------------------------------------------------------------
