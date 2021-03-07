@@ -403,7 +403,7 @@ int main(void)
 				consoleClear();
 				clear_screen = true;
 				consoleSelect(&topScreen);
-				consoleSetWindow(&topScreen, 1, 10, 100, 100);
+				consoleSetWindow(&topScreen, 1, 11, 100, 100);
 				iprintf("      TOUCH TO CONTINUE!");
 
 				consoleSetWindow(&topScreen, 1, 18, 30, 21);
@@ -430,9 +430,17 @@ int main(void)
 			if (touch.px > 0 && touch.py > 97 && sub_title_screen == false)
 			{
 				title_screen = false;
+				consoleSelect(&topScreen);
+				consoleClear();
+				consoleSelect(&bottomScreen);
+				consoleClear();
 			}
 			else if (touch.px > 0 && touch.py < 97 && sub_title_screen == false)
 			{
+				consoleSelect(&topScreen);
+				consoleClear();
+				consoleSelect(&bottomScreen);
+				consoleClear();
 				sub_title_screen = true;
 				consoleSelect(&topScreen);
 				consoleSetWindow(&topScreen, 1, 10, 100, 100);
