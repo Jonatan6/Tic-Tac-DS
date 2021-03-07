@@ -414,9 +414,9 @@ int main(void)
 				iprintf("                    ");
 
 				consoleSelect(&bottomScreen);
-				consoleSetWindow(&bottomScreen, 1, 15, 30, 30);
+				consoleSetWindow(&bottomScreen, 1, 17, 30, 30);
 				iprintf("       VS OTHER PLAYER");
-				consoleSetWindow(&bottomScreen, 1, 10, 30, 30);
+				consoleSetWindow(&bottomScreen, 1, 11, 30, 30);
 				iprintf("------------------------------");
 				consoleSetWindow(&bottomScreen, 1, 5, 30, 30);
 				iprintf("         VS COMPUTER");
@@ -502,7 +502,7 @@ int main(void)
 			{
 				consoleSelect(&topScreen);
 				consoleSetWindow(&topScreen, 1, 1, 30, 21);
-				iprintf("VER 3.0   TIC TAC DS");
+				iprintf("VER 3.1   TIC TAC DS");
 				consoleSetWindow(&topScreen, 1, 2, 30, 21);
 				iprintf("          BY JONATAN");
 				consoleSetWindow(&topScreen, 1, 10, 30, 21);
