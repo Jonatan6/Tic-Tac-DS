@@ -556,7 +556,6 @@ int main(void)
 			if (keys &KEY_START || keys &KEY_SELECT)
 			{
 				settings = !settings;
-				board[4] = ' ';
 				consoleSetWindow(&topScreen, 1, 10, 30, 21);
 				iprintf("                              ");
 				consoleSetWindow(&topScreen, 1, 18, 30, 21);
